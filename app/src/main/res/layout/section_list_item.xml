@@ -8,9 +8,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredChildPaddingLeft"
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/list_item_padding"
         android:hint="worker"
-        android:background="@color/colorPrimaryDark"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="@dimen/list_item_padding" />
 
 </android.support.constraint.ConstraintLayout>

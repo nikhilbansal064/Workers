@@ -8,8 +8,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft"
         android:textColor="@android:color/black"
-        android:paddingTop="10dp"
+        android:paddingTop="@dimen/group_item_padding"
         android:hint="role"
-        android:background="@color/colorAccent"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="@dimen/group_item_padding" />
 </android.support.constraint.ConstraintLayout>

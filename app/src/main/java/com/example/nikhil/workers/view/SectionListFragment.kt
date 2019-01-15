@@ -18,7 +18,6 @@ class SectionListFragment : Fragment() {
 
     private var sectionListAdapter: SectionListAdapter? = null
     private var roleList = mutableListOf<String>()
-    private var mWorkerListData: WorkerListData? = null
     private var workersWithRoleMap: HashMap<String, MutableList<String>>? = null
 
 
@@ -33,12 +32,14 @@ class SectionListFragment : Fragment() {
 
     override  fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        roleList = mutableListOf("A", "B", "C")
-//        workersWithRoleMap?.set("C", mutableListOf("asda","asfafa"))
-//        workersWithRoleMap?.set("B", mutableListOf("asda","asfafa"))
         sectionListAdapter = SectionListAdapter(context, roleList, workersWithRoleMap)
         worker_section_list.setAdapter(sectionListAdapter)
-        getWorkerData()
+        if(WorkerListData.getInstance().hasData()){
+            updateWorkerListUi()
+        }else{
+            getWorkerData()
+
+        }
 
     }
 
@@ -48,26 +49,27 @@ class SectionListFragment : Fragment() {
     private fun getWorkerData() {
         ApiManager.getWorkersList(object : ApiCallback {
             override fun onSuccess(response: Any) {
-                mWorkerListData = response as WorkerListData
-                workersWithRoleMap = getWorkerWithRoleMap()
+                val mWorkerListData = response as WorkerListData
+                workersWithRoleMap = getWorkerWithRoleMap(mWorkerListData)
                 updateWorkerListUi()
             }
 
             override fun onFailure(failureMsg: String) {
-                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.worker_list_api_error), Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    private fun getWorkerWithRoleMap(): HashMap<String, MutableList<String>> {
-        var map = HashMap<String, MutableList<String>>()
+    private fun getWorkerWithRoleMap(mWorkerListData: WorkerListData): HashMap<String, MutableList<String>> {
+        val map = HashMap<String, MutableList<String>>()
 
-        mWorkerListData?.data?.items?.forEach { item ->
+        mWorkerListData.data?.items?.forEach { item ->
             val roleString: String = item.attributes.roleString
             if(map.containsKey(roleString)){
                 map[roleString]?.add(item.attributes.full_name)
             }else{
                 map[roleString] = mutableListOf(item.attributes.full_name)
+                roleList.add(roleString)
             }
         }
 

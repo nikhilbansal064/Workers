@@ -20,7 +20,6 @@ class SimpleListFragment : Fragment() {
 
 
     private var workerListAdapter: WorkerListAdapter? = null
-    private var mWorkerListData: WorkerListData? = null
     private var workerList: MutableList<Items>? = mutableListOf()
 
 
@@ -42,20 +41,24 @@ class SimpleListFragment : Fragment() {
         val itemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         rv_workerList.addItemDecoration(itemDecoration)
 
-        getWorkerData()
+        if(!WorkerListData.getInstance().hasData()){
+            getWorkerData()
+        }else{
+            updateWorkerListUi()
+        }
 
     }
 
     private fun getWorkerData() {
         ApiManager.getWorkersList(object : ApiCallback {
             override fun onSuccess(response: Any) {
-                mWorkerListData = response as WorkerListData
+                val mWorkerListData = response as WorkerListData
                 workerList = mWorkerListData?.data?.items?.toMutableList()
                 updateWorkerListUi()
             }
 
             override fun onFailure(failureMsg: String) {
-                Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.worker_list_api_error), Toast.LENGTH_SHORT).show()
             }
         })
     }
